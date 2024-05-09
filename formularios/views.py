@@ -1,10 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+from .forms import formularioCadastro
 
 def home(request):
-    return render(request, 'home.html')
+    form = formularioCadastro()
+    return render(request, 'home.html', {'form': form})
 
 def processa_formulario(request):
-    nome = request.POST.get('nome')
-    email = request.POST.get('email')
-    return HttpResponse(f'{nome} {email}')
+    form = formularioCadastro(request.POST)
+    if form.is_valid():
+        nome = form.data['nome']
+        email = form.data['email']
+        return HttpResponse(f'{nome} {email}')
+    return HttpResponse('Internal error')
